@@ -1,62 +1,101 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "spoke1VnetName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the Spoke 1 virtual network."
-      }
-    },
-    "spoke1VnetAddressPrefix": {
-      "type": "string",
-      "metadata": {
-        "description": "The address prefix for the Spoke 1 virtual network."
-      }
-    },
-    "spoke2VnetName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the Spoke 2 virtual network."
-      }
-    },
-    "spoke2VnetAddressPrefix": {
-      "type": "string",
-      "metadata": {
-        "description": "The address prefix for the Spoke 2 virtual network."
-      }
-    }
-    // Add other parameters for Spoke configuration if needed
-  },
-  "variables": {},
-  "resources": [
-    {
-      "apiVersion": "2019-11-01",
-      "type": "Microsoft.Network/virtualNetworks",
-      "name": "[parameters('spoke1VnetName')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[parameters('spoke1VnetAddressPrefix')]"
-          ]
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "spokeVnetName": {
+        "type": "string",
+        "defaultValue": "SpokeVNet",
+        "metadata": {
+          "description": "Name of the spoke virtual network."
+        }
+      },
+      "spokeVnetAddressPrefix": {
+        "type": "string",
+        "defaultValue": "10.2.0.0/16",
+        "metadata": {
+          "description": "Address prefix for the spoke virtual network."
+        }
+      },
+      "spokeSubnetName": {
+        "type": "string",
+        "defaultValue": "SpokeSubnet",
+        "metadata": {
+          "description": "Name of the spoke subnet."
+        }
+      },
+      "spokeSubnetPrefix": {
+        "type": "string",
+        "defaultValue": "10.2.0.0/24",
+        "metadata": {
+          "description": "Address prefix for the spoke subnet."
+        }
+      },
+      "spoke2VnetName": {
+        "type": "string",
+        "defaultValue": "Spoke2VNet",
+        "metadata": {
+          "description": "Name of Spoke2 Virtual Network."
+        }
+      },
+      "spoke2VnetAddressPrefix": {
+        "type": "string",
+        "defaultValue": "10.3.0.0/16",
+        "metadata": {
+          "description": "Address prefix for Spoke2 Virtual Network."
+        }
+      },
+      "spoke2SubnetName": {
+        "type": "string",
+        "defaultValue": "Spoke2Subnet",
+        "metadata": {
+          "description": "Name of Spoke2 Subnet."
+        }
+      },
+      "spoke2SubnetPrefix": {
+        "type": "string",
+        "defaultValue": "10.3.0.0/24",
+        "metadata": {
+          "description": "Address prefix for Spoke2 Subnet."
         }
       }
     },
-    {
-      "apiVersion": "2019-11-01",
-      "type": "Microsoft.Network/virtualNetworks",
-      "name": "[parameters('spoke2VnetName')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[parameters('spoke2VnetAddressPrefix')]"
+    "variables": {},
+    "resources": [
+      {
+        "name": "spokeVirtualNetwork",
+        "type": "Microsoft.Network/virtualNetworks",
+        "apiVersion": "2020-11-01",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "addressSpace": {
+            "addressPrefixes": ["[parameters('spokeVnetAddressPrefix')]", "[parameters('spoke2VnetAddressPrefix')]"]
+          },
+          "subnets": [
+            {
+              "name": "[parameters('spokeSubnetName')]",
+              "properties": {
+                "addressPrefix": "[parameters('spokeSubnetPrefix')]"
+              }
+            },
+            {
+              "name": "[parameters('spoke2SubnetName')]",
+              "properties": {
+                "addressPrefix": "[parameters('spoke2SubnetPrefix')]"
+              }
+            }
           ]
         }
       }
+    ],
+    "outputs": {
+      "spokeVirtualNetworkName": {
+        "type": "string",
+        "value": "[parameters('spokeVnetName')]"
+      },
+      "spoke2VirtualNetworkName": {
+        "type": "string",
+        "value": "[parameters('spoke2VnetName')]"
+      }
     }
-    // Add other Spoke-specific resources here (e.g., subnets, NSGs, etc.)
-  ],
-  "outputs": {}
-}
+  }
+  

@@ -1,37 +1,63 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "hubVnetName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the Hub virtual network."
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "hubVnetName": {
+        "type": "string",
+        "defaultValue": "HubVNet",
+        "metadata": {
+          "description": "Name of the hub virtual network."
+        }
+      },
+      "hubVnetAddressPrefix": {
+        "type": "string",
+        "defaultValue": "10.0.0.0/16",
+        "metadata": {
+          "description": "Address prefix for the hub virtual network."
+        }
+      },
+      "hubSubnetName": {
+        "type": "string",
+        "defaultValue": "HubSubnet",
+        "metadata": {
+          "description": "Name of the hub subnet."
+        }
+      },
+      "hubSubnetPrefix": {
+        "type": "string",
+        "defaultValue": "10.0.0.0/24",
+        "metadata": {
+          "description": "Address prefix for the hub subnet."
+        }
       }
     },
-    "hubVnetAddressPrefix": {
-      "type": "string",
-      "metadata": {
-        "description": "The address prefix for the Hub virtual network."
-      }
-    }
-    // Add other parameters for Hub configuration if needed
-  },
-  "variables": {},
-  "resources": [
-    {
-      "apiVersion": "2019-11-01",
-      "type": "Microsoft.Network/virtualNetworks",
-      "name": "[parameters('hubVnetName')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[parameters('hubVnetAddressPrefix')]"
+    "variables": {},
+    "resources": [
+      {
+        "name": "hubVirtualNetwork",
+        "type": "Microsoft.Network/virtualNetworks",
+        "apiVersion": "2020-11-01",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "addressSpace": {
+            "addressPrefixes": ["[parameters('hubVnetAddressPrefix')]"]
+          },
+          "subnets": [
+            {
+              "name": "[parameters('hubSubnetName')]",
+              "properties": {
+                "addressPrefix": "[parameters('hubSubnetPrefix')]"
+              }
+            }
           ]
         }
       }
+    ],
+    "outputs": {
+      "hubVirtualNetworkName": {
+        "type": "string",
+        "value": "[parameters('hubVnetName')]"
+      }
     }
-    // Add other Hub-specific resources here (e.g., subnets, NSGs, etc.)
-  ],
-  "outputs": {}
-}
+  }
+  
