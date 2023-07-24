@@ -1,0 +1,62 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "spoke1VnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Spoke 1 virtual network."
+      }
+    },
+    "spoke1VnetAddressPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "The address prefix for the Spoke 1 virtual network."
+      }
+    },
+    "spoke2VnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Spoke 2 virtual network."
+      }
+    },
+    "spoke2VnetAddressPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "The address prefix for the Spoke 2 virtual network."
+      }
+    }
+    // Add other parameters for Spoke configuration if needed
+  },
+  "variables": {},
+  "resources": [
+    {
+      "apiVersion": "2019-11-01",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[parameters('spoke1VnetName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('spoke1VnetAddressPrefix')]"
+          ]
+        }
+      }
+    },
+    {
+      "apiVersion": "2019-11-01",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[parameters('spoke2VnetName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('spoke2VnetAddressPrefix')]"
+          ]
+        }
+      }
+    }
+    // Add other Spoke-specific resources here (e.g., subnets, NSGs, etc.)
+  ],
+  "outputs": {}
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hubTemplateUri": {
+      "type": "string",
+      "metadata": {
+        "description": "The URI of the Hub configuration linked template."
+      }
+    },
+    "spokeTemplateUri": {
+      "type": "string",
+      "metadata": {
+        "description": "The URI of the Spoke configuration linked template."
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "apiVersion": "2019-10-01",
+      "name": "hubDeployment",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[parameters('hubTemplateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {}
+      }
+    },
+    {
+      "apiVersion": "2019-10-01",
+      "name": "spokeDeployment",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[parameters('spokeTemplateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {}
+      }
+    }
+  ],
+  "outputs": {}
+}

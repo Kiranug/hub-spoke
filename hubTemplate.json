@@ -1,0 +1,37 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hubVnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Hub virtual network."
+      }
+    },
+    "hubVnetAddressPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "The address prefix for the Hub virtual network."
+      }
+    }
+    // Add other parameters for Hub configuration if needed
+  },
+  "variables": {},
+  "resources": [
+    {
+      "apiVersion": "2019-11-01",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[parameters('hubVnetName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('hubVnetAddressPrefix')]"
+          ]
+        }
+      }
+    }
+    // Add other Hub-specific resources here (e.g., subnets, NSGs, etc.)
+  ],
+  "outputs": {}
+}
